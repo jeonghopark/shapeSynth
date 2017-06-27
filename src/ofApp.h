@@ -31,10 +31,9 @@ public:
     
     void dragEvent(ofDragInfo info);
     
-    void audioRequested (float * input, int bufferSize, int nChannels);
     void audioReceived (float * input, int bufferSize, int nChannels);
-    
     void audioOut(ofSoundBuffer & buffer);
+    
     ofSoundStream soundStream;
     
     //    void openFile(string URL="");
@@ -92,13 +91,9 @@ public:
     //3D Model
     ofEasyCam cam;
     
-    //    void pointDraw();
     int numPoint;
     
     int modelIndex;
-    
-    ofFbo processingImagFbo;
-    ofFbo originalFbo;
     
     ofTexture texScreen;
     ofRectangle captureRect;
@@ -119,11 +114,8 @@ public:
     void imageCapture();
     
     
-    //    void zDepthShapeDraw();
     
-    
-    void processingImage();
-    
+
     void errorLengthChanged(int & _m);
     void guiButton(bool & _b);
     
@@ -134,7 +126,6 @@ public:
     //
     void drawVolumeLine();
     
-    void fboCapture();
     
     float processScreenWidth, processScreenHeight;
     float screenWidth, screenHeight;

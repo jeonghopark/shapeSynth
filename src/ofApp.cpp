@@ -68,15 +68,6 @@ void ofApp::setup(){
     maxHertz = 6000;
     spectrum.setup( 1, maxHertz );
     
-    
-    //    ofSoundStreamSetup(2, 0, this, SAMPLE_RATE, INITIAL_BUFFER_SIZE, 4);
-    
-    // ???
-    //    soundStream.printDeviceList();
-    
-    
-    //    ofSoundStreamSetup( 2, 0, this, SAMPLE_RATE, INITIAL_BUFFER_SIZE, 4 );
-    
     auto devices = soundStream.getMatchingDevices("default");
     ofSoundStreamSettings settings;
     //    auto devices = soundStream.getDeviceList();
@@ -102,9 +93,6 @@ void ofApp::setup(){
     captureImage.allocate(captureW, captureH, OF_IMAGE_COLOR);
     texProcessScreen.allocate(captureW, captureH, GL_RGB);
     captureProcessImage.allocate(captureW, captureH, OF_IMAGE_COLOR);
-    
-    originalFbo.allocate(captureW, captureH, GL_RGB);
-    processingImagFbo.allocate(captureW, captureH, GL_RGB);
     
     
     bGuiView = true;
@@ -158,47 +146,12 @@ void ofApp::update(){
     frameRate = ofToString(ofGetFrameRate(), 1);
     
     
-    originalFbo.begin();
     shapesFbo.draw(0, 0);
-    originalFbo.end();
-    
-    
-    if (imageProcessView) {
-        processingImagFbo.begin();
-        ofClear(0, 0);
-        ofSetColor(255);
-        processingImage();
-        processingImagFbo.end();
-    }
     
     
 }
 
 
-
-//--------------------------------------------------------------
-void ofApp::fboCapture(){
-    
-//    ofClear(0,0);
-//    
-//    cam.begin();
-//    
-//    ofSetColor(150);
-//    
-//    ofRotateZDeg(180);
-//    
-//    //    ofSetColor(10);
-//    
-//    mesh.drawWireframe();
-//    
-//    //        figureModel.drawFaces();
-//    //    figureModel.drawWireframe();
-//    
-//    cam.end();
-    
-    shapesFbo.draw(0, 0);
-    
-}
 
 
 
@@ -219,34 +172,7 @@ void ofApp::draw(){
     
     spectrum.update();
     
-    if (imageProcessView) {
-        processingImagFbo.draw(0, 0);
-    } else {
-        shapesFbo.draw(0, 0);
-        
-//        shapesFbo.draw(0, 0);
-        
-//        cam.begin();
-//        
-//        ofxAssimpMeshHelper & meshHelper = figureModel.getMeshHelper(0);
-//        
-//        ofMultMatrix(figureModel.getModelMatrix());
-//        ofMultMatrix(meshHelper.matrix);
-//        
-//        ofMaterial & material = meshHelper.material;
-//        if(meshHelper.hasTexture()){
-//            meshHelper.getTextureRef().bind();
-//        }
-//        material.begin();
-//        mesh.drawWireframe();
-//        material.end();
-//        if(meshHelper.hasTexture()){
-//            meshHelper.getTextureRef().unbind();
-//        }
-//        
-//        cam.end();
-        
-    }
+    shapesFbo.draw(0, 0);
     
     
     playerHead.drawPlayHead();
@@ -318,117 +244,6 @@ void ofApp::drawVolumeLine(){
 
 
 
-//--------------------------------------------------------------
-void ofApp::processingImage(){
-    
-    //            captureImage.clear();
-    //            texScreen.clear();
-    ofPushMatrix();
-    ofPushStyle();
-    
-    //            texProcessScreen.loadScreenData( 10, ofGetHeight() * 0.5 - 10, captureW, captureH );
-    //            captureProcessImage.mirror(true, false);
-    //            //        captureProcessRect.set( 10, ofGetHeight()-512-10, captureW, captureH );
-    
-    ofPixels _pProcess;
-    _pProcess.setImageType(OF_IMAGE_COLOR_ALPHA);
-    
-    //            texProcessScreen.readToPixels(_pProcess);
-    
-    originalFbo.readToPixels(_pProcess);
-    
-    
-    
-    unsigned char * _rawPixels = _pProcess.getData();
-    
-    int _r, _g, _b;
-    
-    int _length = errorLength;
-    
-    for (int j=0; j<captureH; j++) {
-        for (int i=0; i<captureW-_length; i+=_length) {
-            int _index = i + j * (captureW);
-            
-            _r = _rawPixels[_index*3];
-            _g = _rawPixels[_index*3+ 1];
-            _b = _rawPixels[_index*3+ 2];
-            int _sumColor = (_r + _g + _b) / 3.0;
-            
-            for (int k=0; k<_length; k++) {
-                float _r = MAX(-fadeLength * k + 1.0, 0);
-                ofColor _c = ofColor( _sumColor * _r);
-                _pProcess.setColor(i+k, j, _c);
-            }
-            
-        }
-    }
-    
-    
-    // TODO: Image Processing Ending
-    for (int j=0; j<captureH; j++) {
-        for (int i=captureW-_length; i<captureW; i++) {
-            _pProcess.setColor(i, j, ofColor(0) );
-        }
-    }
-    
-    
-    //        _pProcess.mirror(true, false);
-    
-    captureProcessImage.setFromPixels(_pProcess.getData(), _pProcess.getWidth(), _pProcess.getHeight(), OF_IMAGE_COLOR);
-    
-    float _size = 1;
-    captureProcessImage.draw( 0, 0, captureW*_size, captureH*_size );
-    
-    
-    ofPopStyle();
-    ofPopMatrix();
-    
-}
-
-
-
-//--------------------------------------------------------------
-//void ofApp::pointDraw(){
-
-//    ofPushMatrix();
-//    ofPushStyle();
-//
-//    glPointSize(1);
-//
-//    ofSetColor(255);
-//    mesh.drawVertices();
-//
-//    ofPopStyle();
-//    ofPopMatrix();
-
-//}
-
-
-
-//--------------------------------------------------------------
-//void ofApp::zDepthShapeDraw(){
-//
-//    ofPushMatrix();
-//
-//    ofPushStyle();
-//
-//    for (int i=0; i<mesh.getNumVertices(); i++) {
-//        float _z = mesh.getVertex(i).z;
-//        ofSetColor(255, 30);
-//        if ((_z>minZDepth)&&(_z<maxZDepth)) {
-//            ofDrawCircle(mesh.getVertex(i).x, mesh.getVertex(i).y, mesh.getVertex(i).z, mesh.getVertex(i).z*0.05);
-//        }
-//    }
-//
-//    ofPopStyle();
-//
-//    ofPopMatrix();
-//
-//}
-
-
-
-
 
 
 //--------------------------------------------------------------
@@ -446,11 +261,7 @@ void ofApp::imageCapture(){
     ofPixels _p;
     //    texScreen.readToPixels(_p);
     
-    if (imageProcessView) {
-        processingImagFbo.readToPixels(_p);
-    } else {
-        shapesFbo.readToPixels(_p);
-    }
+    shapesFbo.readToPixels(_p);
     
     //    _p.mirror(true, false);
     captureImage.setFromPixels(_p.getData(), _p.getWidth(), _p.getHeight(), OF_IMAGE_COLOR);
@@ -460,56 +271,6 @@ void ofApp::imageCapture(){
 }
 
 
-//--------------------------------------------------------------
-void ofApp::audioRequested (float * output, int bufferSize, int nChannels){
-    
-    //    if(spectrum.playing){
-    //
-    //        //        float *ptr = output;
-    //
-    //        for (int i = 0; i < bufferSize; i++){
-    //
-    //            wave = 0.0;
-    //
-    //            for(int n=0; n<BIT; n++){
-    //
-    //                if (amp[n]>0.00001) {
-    //                    phases[n] += 512./(44100.0/(hertzScale[n]));
-    //
-    //                    if ( phases[n] >= 511 ) phases[n] -=512;
-    //                    if ( phases[n] < 0 ) phases[n] = 0;
-    //
-    //                    //remainder = phases[n] - floor(phases[n]);
-    //                    //wave+=(float) ((1-remainder) * sineBuffer[1+ (long) phases[n]] + remainder * sineBuffer[2+(long) phases[n]])*amp[n];
-    //
-    //                    wave += ( sineBuffer[1 + (long) phases[n]] ) * amp[n];
-    //                }
-    //            }
-    //
-    //            wave/=10.0;
-    //            if(wave>1.0) wave=1.0;
-    //            if(wave<-1.0) wave=-1.0;
-    //
-    //            output[i*nChannels    ] = wave * volume;
-    //            output[i*nChannels + 1] = wave * volume;
-    //            //            outp[i] = wave;
-    //
-    //            //            *ptr++ = wave * volume;
-    //
-    //        }
-    //
-    //
-    //    } else {
-    //        //        for (int i = 0; i < bufferSize; i++){
-    //        //            output[i*nChannels    ] = 0;
-    //        //            output[i*nChannels + 1] = 0;
-    //        //            outp[i] = 0;
-    //        //        }
-    //    }
-    
-    
-    
-}
 
 
 
@@ -762,8 +523,6 @@ void ofApp::dragEvent(ofDragInfo info) {
 
 
 
-
-
 //--------------------------------------------------------------
 void ofApp::generateShapeFbo(){
  
@@ -773,8 +532,12 @@ void ofApp::generateShapeFbo(){
     
     for (int i=0; i<30; i++) {
         for (int j=0; j<10; j++) {
+            ofPushMatrix();
             ofSetColor(ofRandom(0, 255));
-            ofDrawRectangle( ofRandom(0, processScreenWidth), ofRandom(0, processScreenHeight), ofRandom(0, 100), ofRandom(0, 5) );
+            ofTranslate(ofRandom(processScreenWidth), ofRandom(processScreenHeight) );
+            ofRotateZDeg( ofRandom(-15, 15) );
+            ofDrawRectangle( 0, 0, ofRandom(0, 100), ofRandom(0, 5) );
+            ofPopMatrix();
         }
     }
     
