@@ -222,7 +222,7 @@ void ofApp::draw(){
     if (imageProcessView) {
         processingImagFbo.draw(0, 0);
     } else {
-        originalFbo.draw(0, 0);
+        shapesFbo.draw(0, 0);
         
 //        shapesFbo.draw(0, 0);
         
@@ -449,7 +449,7 @@ void ofApp::imageCapture(){
     if (imageProcessView) {
         processingImagFbo.readToPixels(_p);
     } else {
-        originalFbo.readToPixels(_p);
+        shapesFbo.readToPixels(_p);
     }
     
     //    _p.mirror(true, false);
@@ -738,7 +738,7 @@ void ofApp::mousePressed(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
     
-    imageCapture();
+//    imageCapture();
     
 }
 
