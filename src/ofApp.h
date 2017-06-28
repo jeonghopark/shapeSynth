@@ -36,8 +36,6 @@ public:
     
     ofSoundStream soundStream;
     
-    //    void openFile(string URL="");
-    
     float line;
     
     int	maxHertz;
@@ -93,40 +91,18 @@ public:
     
     int numPoint;
     
-    int modelIndex;
-    
-    ofTexture texScreen;
-    ofRectangle captureRect;
-    ofImage captureImage;
-    ofTexture texProcessScreen;
-    ofImage captureProcessImage;
-    ofRectangle captureProcessRect;
-    
-    bool imageProcessCapture;
-    
-    ofMatrix4x4 setMatrix;
-    
-    //    void imageFormatButtonClick(bool &_b);
-    
     int captureH, captureW;
     
     void loadCapture(ofImage _img);
     void imageCapture();
     
-    
-    
 
     void errorLengthChanged(int & _m);
     void guiButton(bool & _b);
     
-    bool bImageProcessView;
-    
-    
     
     //
     void drawVolumeLine();
-    
-    
     float processScreenWidth, processScreenHeight;
     float screenWidth, screenHeight;
     

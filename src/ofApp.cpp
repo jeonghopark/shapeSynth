@@ -63,8 +63,6 @@ void ofApp::setup(){
         phases[i] = 0;
     }
     
-    
-    
     maxHertz = 6000;
     spectrum.setup( 1, maxHertz );
     
@@ -74,32 +72,18 @@ void ofApp::setup(){
     if (!devices.empty()) {
         settings.setOutDevice(devices[1]);
     }
-    
     settings.setOutListener(this);
     settings.bufferSize = INITIAL_BUFFER_SIZE;
     settings.sampleRate = SAMPLE_RATE;
     settings.numInputChannels = 0;
     settings.numOutputChannels = 2;
-    
     soundStream.setup(settings);
-    
     
     
     gui.setup();
     guiSetting();
     
-    
-    texScreen.allocate(captureW, captureH, GL_RGB);
-    captureImage.allocate(captureW, captureH, OF_IMAGE_COLOR);
-    texProcessScreen.allocate(captureW, captureH, GL_RGB);
-    captureProcessImage.allocate(captureW, captureH, OF_IMAGE_COLOR);
-    
-    
     bGuiView = true;
-    imageProcessCapture = false;
-    
-    bImageProcessView = false;
-    
     
     
 }
@@ -249,24 +233,14 @@ void ofApp::drawVolumeLine(){
 //--------------------------------------------------------------
 void ofApp::imageCapture(){
     
-    //    captureImage.clear();
-    //    texScreen.clear();
-    //    texScreen.allocate(captureW, captureH, GL_RGB);
-    //    captureImage.allocate(captureW, captureH, OF_IMAGE_COLOR);
-    
-    //    texScreen.loadScreenData( 10, ofGetHeight()-512-10, captureW, captureH );
-    //    captureImage.mirror(true, false);
-    //    captureRect.set( 10, ofGetHeight()-512-10, captureW, captureH );
-    
     ofPixels _p;
-    //    texScreen.readToPixels(_p);
+    
+    ofImage _buffImg;
+    _buffImg.allocate(captureW, captureH, OF_IMAGE_COLOR);
     
     shapesFbo.readToPixels(_p);
-    
-    //    _p.mirror(true, false);
-    captureImage.setFromPixels(_p.getData(), _p.getWidth(), _p.getHeight(), OF_IMAGE_COLOR);
-    
-    spectrum.loadImageSpectrum(captureImage);
+    _buffImg.setFromPixels(_p.getData(), _p.getWidth(), _p.getHeight(), OF_IMAGE_COLOR);
+    spectrum.loadImageSpectrum(_buffImg);
     
 }
 
@@ -333,32 +307,6 @@ void ofApp::audioOut(ofSoundBuffer & buffer){
 }
 
 
-
-
-//--------------------------------------------------------------
-//void ofApp::openFile(string URL){
-//
-//    string _output;
-//    spectrum.pause();
-//    if(URL==""){
-//        ofFileDialogResult result = ofSystemLoadDialog("Open File", false, "");
-//
-//        if(result.bSuccess){
-//            URL = result.filePath;
-//            _output = "URL to open: \n "+URL;
-//            string extension;
-//            for(int i = URL.length()-3; i < URL.length(); i++){
-//                extension+=URL[i];
-//            }
-//            spectrum.loadImageSpectrum(URL);
-//        }else {
-//            _output = "OPEN canceled. ";
-//        }
-//    }
-//
-//}
-
-
 //--------------------------------------------------------------
 void ofApp::loadCapture(ofImage _img){
     
@@ -388,10 +336,10 @@ void ofApp::guiSetting(){
     //    gui.add(minZDepth.setup( "Min zDepth", 0.0, -10.0, 10.0) );
     //    gui.add(zDepthShape.setup("zDepth Shape", false));
     //    gui.add(brightness.setup("PointBright", 120, 0, 255));
-    gui.add(imageProcessView.setup("ImageProcess", false));
-    gui.add(errorMath.setup("error", true));
-    gui.add(errorLength.setup("ErrorLength", 20, 2, 50));
-    gui.add(fadeLength.setup("FadeLength", 0, 0, 0.1));
+    //    gui.add(imageProcessView.setup("ImageProcess", false));
+    //    gui.add(errorMath.setup("error", true));
+    //    gui.add(errorLength.setup("ErrorLength", 20, 2, 50));
+    //    gui.add(fadeLength.setup("FadeLength", 0, 0, 0.1));
     gui.add(volume.setup("Volume", 2, 0, 5));
     
     
@@ -446,9 +394,6 @@ void ofApp::keyReleased(int key){
             imageCapture();
             break;
             
-        case 'p':
-            spectrum.loadImageSpectrum(captureProcessImage);
-            break;
             
         case ' ':
             imageCapture();
@@ -499,8 +444,6 @@ void ofApp::mousePressed(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
     
-//    imageCapture();
-    
 }
 
 
@@ -525,7 +468,7 @@ void ofApp::dragEvent(ofDragInfo info) {
 
 //--------------------------------------------------------------
 void ofApp::generateShapeFbo(){
- 
+    
     shapesFbo.begin();
     
     ofClear(0, 0);
@@ -542,7 +485,7 @@ void ofApp::generateShapeFbo(){
     }
     
     shapesFbo.end();
-
+    
     
 }
 
