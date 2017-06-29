@@ -15,15 +15,15 @@ void ofApp::setup(){
     //#endif
     
     ofEnableAlphaBlending();
-    ofEnableDepthTest();
+//    ofEnableDepthTest();
     ofSetupScreen();
     ofSetFrameRate(60);
     
     ofBackground(0);
     
-    ofDisableArbTex();
+//    ofDisableArbTex();
     
-    ofEnablePointSprites();
+//    ofEnablePointSprites();
     
     processScreenWidth = 1280;
     processScreenHeight = 512;
@@ -63,7 +63,7 @@ void ofApp::setup(){
         phases[i] = 0;
     }
     
-    maxHertz = 6000;
+    maxHertz = 1200;
     spectrum.setup( 1, maxHertz );
     
     auto devices = soundStream.getMatchingDevices("default");
@@ -83,7 +83,7 @@ void ofApp::setup(){
     gui.setup();
     guiSetting();
     
-    bGuiView = true;
+    bGuiView = false;
     
     
 }
@@ -115,6 +115,8 @@ void ofApp::update(){
         playerHead.x2 += speed;
         
         if (playerHead.x1 > processScreenWidth){
+            generateShapeFbo();
+            imageCapture();
             playerHead.x1 = 0;
             playerHead.x2 = 0;
         }
@@ -170,13 +172,14 @@ void ofApp::draw(){
     ofPopMatrix();
     
     if (bGuiView) {
-        ofDisablePointSprites();
-        ofDisableDepthTest();
+//        ofDisablePointSprites();
+//        ofDisableDepthTest();
         gui.draw();
     }
     
-    
 }
+
+
 
 
 
@@ -187,7 +190,7 @@ void ofApp::drawVolumeLine(){
     ofTranslate(playerHead.x1, 0);
     
     ofPushStyle();
-    ofSetColor(255, 255, 255, 100);
+    ofSetColor(0, 255, 255, 255);
     
     if ( spectrum.playing ) {
         
@@ -216,7 +219,6 @@ void ofApp::drawVolumeLine(){
             ofDrawLine( 0, n * 1, -amp[n] * _levelSize, n * 1 );
             
         }
-        
         
     }
     
@@ -275,10 +277,12 @@ void ofApp::audioOut(ofSoundBuffer & buffer){
                     if ( phases[n] >= 511 ) phases[n] -=512;
                     if ( phases[n] < 0 ) phases[n] = 0;
                     
-                    //remainder = phases[n] - floor(phases[n]);
-                    //wave+=(float) ((1-remainder) * sineBuffer[1+ (long) phases[n]] + remainder * sineBuffer[2+(long) phases[n]])*amp[n];
                     
-                    wave += ( sineBuffer[1 + (long) phases[n]] ) * amp[n];
+                    remainder = phases[n] - floor(phases[n]);
+                    wave+=(float) ((1-remainder) * sineBuffer[1+ (long) phases[n]] + remainder * sineBuffer[2+(long) phases[n]])*amp[n];
+
+//                    wave += ( sineBuffer[1 + (long) phases[n]] ) * amp[n];
+                    
                 }
             }
             
@@ -303,7 +307,6 @@ void ofApp::audioOut(ofSoundBuffer & buffer){
     }
     
     
-    
 }
 
 
@@ -323,11 +326,11 @@ void ofApp::guiSetting(){
     gui.setPosition( ofGetWidth() - 230, 10 );
     gui.add(frameRate.setup("FrameRate", " "));
     //    gui.add(modelSelect.setup("Model Select"));
-    gui.add(speed.setup("speed", 1.0, 0.0, 10.0) );
+    gui.add(speed.setup("speed", 0.45, 0.0, 3.0) );
     //    gui.add(openf.setup( "Open Picture", false) );
-    gui.add(maxHz.setup( "Spectrum Max HZ", 5000, 300.0, 8000.0) );
-    gui.add(minHz.setup( "Spectrum Min HZ", 50, 1.0, 200.0) );
-    gui.add(lineSize.setup( "LINE", 5.0, 0.0, 20.0) );
+    gui.add(maxHz.setup( "Spectrum Max HZ", 1500, 300.0, 8000.0) );
+    gui.add(minHz.setup( "Spectrum Min HZ", 20, 1.0, 200.0) );
+    gui.add(lineSize.setup( "LINE", 1.8, 0.0, 20.0) );
     //    gui.add(reset.setup("Reset!", ""));
     //    gui.add(imageFormat.setup("Image Format Quad/Land", true) );
     gui.add(returnZero.setup("Return Zero"));
@@ -471,18 +474,93 @@ void ofApp::generateShapeFbo(){
     
     shapesFbo.begin();
     
-    ofClear(0, 0);
+    ofClear(0, 255);
     
-    for (int i=0; i<30; i++) {
-        for (int j=0; j<10; j++) {
-            ofPushMatrix();
-            ofSetColor(ofRandom(0, 255));
-            ofTranslate(ofRandom(processScreenWidth), ofRandom(processScreenHeight) );
-            ofRotateZDeg( ofRandom(-15, 15) );
-            ofDrawRectangle( 0, 0, ofRandom(0, 100), ofRandom(0, 5) );
-            ofPopMatrix();
-        }
+    //    for (int i=0; i<150; i++) {
+    //        for (int j=0; j<2; j++) {
+    //            ofPushMatrix();
+    //            ofSetColor(ofRandom(0, 120));
+    //            ofTranslate(i * 12, ofRandom(processScreenHeight) );
+    //            //            ofRotateZDeg( ofRandom(-15, 15) );
+    //            ofDrawRectangle( 0, 0, ofRandom(0, 5), ofRandom(0, 10) );
+    //            ofPopMatrix();
+    //        }
+    //    }
+    
+    
+    //    for (int i=0; i<3; i++) {
+    //        ofSetColor(30);
+    //        ofDrawLine( 0, ofRandom(processScreenHeight), processScreenWidth, ofRandom(processScreenHeight) );
+    //    }
+    
+    
+    //    for (int i=0; i<80; i++) {
+    //        ofSetColor(ofRandom(0, 120), 60);
+    //        ofDrawLine( 0, ofRandom(processScreenHeight), processScreenWidth, ofRandom(processScreenHeight) );
+    //    }
+    
+    
+    for (int i=0; i<900; i++) {
+        ofPushMatrix();
+        ofTranslate(i * 3, ofRandom(10, 20) );
+        ofSetColor(ofRandom(120, 200) * 0.2);
+        ofDrawRectangle( 0, 0, ofRandom(1, 1), ofRandom(1, 2) );
+        ofPopMatrix();
     }
+    
+    for (int i=0; i<900; i++) {
+        ofPushMatrix();
+        ofTranslate(i * 3 + 1.5, ofRandom(30, 40) );
+        ofSetColor(ofRandom(120, 200) * 0.2);
+        ofDrawRectangle( 0, 0, ofRandom(1, 1), ofRandom(1, 2) );
+        ofPopMatrix();
+    }
+    
+    
+    for (int i=0; i<300; i++) {
+        
+        ofPushStyle();
+        ofNoFill();
+        
+        ofPushMatrix();
+        ofTranslate(i * 10, processScreenHeight - 120 );
+        ofSetColor(ofRandom(0, 255));
+        ofDrawRectangle( 0, 0, ofRandom(30, 50), ofRandom(10, 40) );
+        ofPopMatrix();
+        
+        ofPushMatrix();
+        ofTranslate(i * 15, processScreenHeight - 80 );
+        ofSetColor(ofRandom(0, 255));
+        ofDrawRectangle( 0, 0, ofRandom(30, 50), ofRandom(10, 40) );
+        ofPopMatrix();
+        
+        ofPushMatrix();
+        ofTranslate(i * 20, processScreenHeight - 60 );
+        ofSetColor(ofRandom(120, 255));
+        ofDrawRectangle( 0, 0, ofRandom(10, 10), ofRandom(10, 60) );
+        ofPopMatrix();
+        
+        ofPopStyle();
+    }
+    
+    
+    float _num = 10;
+    for (int j=0; j<10; j++) {
+        float _ratio = ofRandom(0.08, 0.3);
+        float _startY = ofRandom(processScreenHeight);
+        int _startNoise = ofRandom(10000);
+        ofPushStyle();
+        ofSetColor( ofRandom(10, 60) );
+        for (int i=0; i<_num; i+=1) {
+            float _x1 = i * processScreenWidth / _num;
+            float _x2 = (i + 1) * processScreenWidth / _num;
+            float _y1 = ofNoise((i + _startNoise) * _ratio) * 100 + _startY;
+            float _y2 = ofNoise((i + _startNoise + 1) * _ratio) * 100 + _startY;
+            ofDrawLine( _x1, _y1, _x2, _y2 );
+        }
+        ofPopStyle();
+    }
+    
     
     shapesFbo.end();
     
