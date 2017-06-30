@@ -36,15 +36,6 @@ void ofApp::setup(){
     
     
     
-    cam.setAutoDistance(false);
-    cam.setDistance(10);
-    cam.setFarClip(0);
-    
-    
-    captureW = processScreenWidth;
-    captureH = processScreenHeight;
-    
-    
     line = 0;
     
     for (int i=0; i<514; i++) {
@@ -238,7 +229,7 @@ void ofApp::imageCapture(){
     ofPixels _p;
     
     ofImage _buffImg;
-    _buffImg.allocate(captureW, captureH, OF_IMAGE_COLOR);
+    _buffImg.allocate(processScreenWidth, processScreenHeight, OF_IMAGE_COLOR);
     
     shapesFbo.readToPixels(_p);
     _buffImg.setFromPixels(_p.getData(), _p.getWidth(), _p.getHeight(), OF_IMAGE_COLOR);

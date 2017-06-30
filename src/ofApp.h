@@ -85,13 +85,7 @@ public:
     
     bool bGuiView;
     
-    
-    //3D Model
-    ofEasyCam cam;
-    
     int numPoint;
-    
-    int captureH, captureW;
     
     void loadCapture(ofImage _img);
     void imageCapture();
