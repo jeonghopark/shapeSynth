@@ -17,7 +17,7 @@ PlayerHead::PlayerHead(){
 void PlayerHead::drawPlayHead(){
 
     ofPushStyle();
-	ofSetColor(255, 255, 255, 120);
+	ofSetColor(255, 255, 255, 180);
 //	ofCircle(x1, y1, 3);
 //	ofCircle(x2, y2, 3);
 	ofDrawLine(x1, y1, x2, y2);
@@ -54,7 +54,7 @@ void PlayerHead::mouseDragged(int x, int y, int button) {
 		if(x<0){
 			x1 = fmax(x, 0);
 		}else {
-			x1 = fmin(x, 1280);
+			x1 = fmin(x, 512);
 		}
 
 		if (y<0) {
@@ -67,7 +67,7 @@ void PlayerHead::mouseDragged(int x, int y, int button) {
 		if(x<0){
 			x2 = fmax(x, 0);
 		}else {
-			x2 = fmin(x, 1280);
+			x2 = fmin(x, 512);
 		}
 
 		if (y<0) {

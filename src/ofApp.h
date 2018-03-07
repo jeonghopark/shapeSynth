@@ -88,7 +88,7 @@ public:
     int numPoint;
     
     void loadCapture(ofImage _img);
-    void imageCapture();
+    ofImage imageCapture();
     
 
     void errorLengthChanged(int & _m);
@@ -104,5 +104,14 @@ public:
     //
     ofFbo shapesFbo;
     void generateShapeFbo();
-    
+
+
+    //
+    bool triggerEnd;
+    void dotDraw();
+
+    int triRotaion;
+    void shapeDraw(int numShape, int size);
+
+
 };

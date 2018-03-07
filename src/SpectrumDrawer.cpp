@@ -34,11 +34,11 @@ void SpectrumDrawer::setup(int _minHz, int _maxHz){
 //--------------------------------------------------------------
 void SpectrumDrawer::update(){
     
-    ofPushStyle();
-    ofSetColor(10, 10, 10, 120);
-    ofDrawRectangle(0, 0, 1280, spectrumHeight);
-    ofPopStyle();
-    
+//    ofPushStyle();
+//    ofSetColor(10, 10, 10, 120);
+//    ofDrawRectangle(0, 0, 1280, spectrumHeight);
+//    ofPopStyle();
+
     if(playing){
 //        player += speed;
         player += 0;
@@ -56,52 +56,52 @@ void SpectrumDrawer::update(){
     //		square=false;
     //	}
     
-    if(!loadedMusicPlaying){
-        
-        //kesz spektrumot rajzolunk
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_TEXTURE_2D);
-        glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glBegin(GL_QUADS);
-        
-        float ratio = (float)(ofGetWidth())/(float)width;
-        float offXRatio = (player-offsetX)/(float) width;
-        
-        float offYRatio = (offsetY)/(float) width;
-        glTexCoord2f(0.0 + offYRatio, 0.0 + offXRatio);		glVertex3i(0, 0, 0);
-        glTexCoord2f(0.0 + offYRatio, ratio + offXRatio);		glVertex3i(1280, 0, 0);
-        glTexCoord2f(1.0 + offYRatio, ratio + offXRatio);		glVertex3i(1280, spectrumHeight, 0);
-        glTexCoord2f(1.0 + offYRatio, 0.0 + offXRatio);		glVertex3i(0, spectrumHeight, 0);
-        
-        glEnd();
-        glFlush();
-        glDisable(GL_TEXTURE_2D);
-        
-    }else {
-        //keszulo spektrumot rajzolunk
-        glBegin(GL_POINTS);
-        for (int x=0; x<1280; x++) {
-            for (int y=0; y<spectrumHeight; y++) {
-                float c;
-                if (width>1280) {
-                    c = pixels[x+(width-1280)][y];
-                } else {
-                    c = pixels[x][y];
-                }
-                
-                //cout << getPixel(x, y);
-                c/=255.0;
-                c=sqrt(c);
-                //	ofSetColor(ertek, pow(ertek/255.0,3)*255.0, pow(ertek/255.0,5)*255.0,255);
-                
-                glColor3f(c,c,c);
-                glVertex2f(x, y);
-            }
-        }
-        glEnd();
-    }
+//    if(!loadedMusicPlaying){
+//        
+//        //kesz spektrumot rajzolunk
+//        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//        glEnable(GL_TEXTURE_2D);
+//        glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+//        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+//        glBindTexture(GL_TEXTURE_2D, texture1);
+//        glBegin(GL_QUADS);
+//        
+//        float ratio = (float)(ofGetWidth())/(float)width;
+//        float offXRatio = (player-offsetX)/(float) width;
+//        
+//        float offYRatio = (offsetY)/(float) width;
+//        glTexCoord2f(0.0 + offYRatio, 0.0 + offXRatio);        glVertex3i(0, 0, 0);
+//        glTexCoord2f(0.0 + offYRatio, ratio + offXRatio);        glVertex3i(1280, 0, 0);
+//        glTexCoord2f(1.0 + offYRatio, ratio + offXRatio);        glVertex3i(1280, spectrumHeight, 0);
+//        glTexCoord2f(1.0 + offYRatio, 0.0 + offXRatio);        glVertex3i(0, spectrumHeight, 0);
+//        
+//        glEnd();
+//        glFlush();
+//        glDisable(GL_TEXTURE_2D);
+//        
+//    }else {
+//        //keszulo spektrumot rajzolunk
+//        glBegin(GL_POINTS);
+//        for (int x=0; x<1280; x++) {
+//            for (int y=0; y<spectrumHeight; y++) {
+//                float c;
+//                if (width>1280) {
+//                    c = pixels[x+(width-1280)][y];
+//                } else {
+//                    c = pixels[x][y];
+//                }
+//                
+//                //cout << getPixel(x, y);
+//                c/=255.0;
+//                c=sqrt(c);
+//                //    ofSetColor(ertek, pow(ertek/255.0,3)*255.0, pow(ertek/255.0,5)*255.0,255);
+//                
+//                glColor3f(c,c,c);
+//                glVertex2f(x, y);
+//            }
+//        }
+//        glEnd();
+//    }
     
     //hertz table
     
@@ -201,21 +201,21 @@ void SpectrumDrawer::loadImageSpectrum(string target){
     height = spectrumLoader.getHeight();
     
     
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_TEXTURE_2D);
-    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    
-    glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, height, width, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//    glEnable(GL_TEXTURE_2D);
+//    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+//    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+//    glGenTextures(1, &texture1);
+//    glBindTexture(GL_TEXTURE_2D, texture1);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//
+//    glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, height, width, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+//
+//    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
 }
 
 
@@ -257,21 +257,21 @@ void SpectrumDrawer::loadImageSpectrum(ofImage _img){
     width = spectrumCaptureLoader.getWidth();
     height = spectrumCaptureLoader.getHeight();
     
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_TEXTURE_2D);
-    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    
-    glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, height, width, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//    glEnable(GL_TEXTURE_2D);
+//    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+//    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+//    glGenTextures(1, &texture1);
+//    glBindTexture(GL_TEXTURE_2D, texture1);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//
+//    glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, height, width, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+//
+//    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
 }
 
 

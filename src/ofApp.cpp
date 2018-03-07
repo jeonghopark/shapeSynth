@@ -16,22 +16,23 @@ void ofApp::setup(){
     
     ofEnableAlphaBlending();
 //    ofEnableDepthTest();
-    ofSetupScreen();
+//    ofSetupScreen();
     ofSetFrameRate(60);
     
-    ofBackground(0);
-    
+    ofBackground(255, 0, 0);
+
+
 //    ofDisableArbTex();
     
 //    ofEnablePointSprites();
     
-    processScreenWidth = 1280;
+    processScreenWidth = 512;
     processScreenHeight = 512;
     screenWidth = processScreenWidth;
     screenHeight = processScreenHeight;
     
     
-    shapesFbo.allocate(processScreenWidth, processScreenHeight, GL_RGB);
+    shapesFbo.allocate(processScreenWidth, processScreenHeight, GL_RGBA);
     generateShapeFbo();
     
     
@@ -76,7 +77,8 @@ void ofApp::setup(){
     
     bGuiView = false;
     
-    
+    triggerEnd = false;
+    triRotaion = 0;
 }
 
 
@@ -94,7 +96,7 @@ void ofApp::exit(){
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    
+
     spectrum.speed = speed;
     spectrum.maxHz = maxHz;
     spectrum.minHz = minHz;
@@ -108,6 +110,7 @@ void ofApp::update(){
         if (playerHead.x1 > processScreenWidth){
             generateShapeFbo();
             imageCapture();
+            triggerEnd = true;
             playerHead.x1 = 0;
             playerHead.x2 = 0;
         }
@@ -123,8 +126,8 @@ void ofApp::update(){
     frameRate = ofToString(ofGetFrameRate(), 1);
     
     
-    shapesFbo.draw(0, 0);
-    
+//    shapesFbo.draw(0, 0);
+
     
 }
 
@@ -137,21 +140,21 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    
+
     ofPushMatrix();
     
     float _x = (screenWidth - processScreenWidth) * 0.5;
     float _y = (screenHeight - processScreenHeight) * 0.5;
-    ofTranslate(_x, _y);
-    
+//    ofTranslate(_x, _y);
+
     ofPushMatrix();
-    
+
+    ofBackground(255, 0, 0);
     
     spectrum.update();
     
     shapesFbo.draw(0, 0);
-    
-    
+
     playerHead.drawPlayHead();
     
     ofPopMatrix();
@@ -181,7 +184,7 @@ void ofApp::drawVolumeLine(){
     ofTranslate(playerHead.x1, 0);
     
     ofPushStyle();
-    ofSetColor(0, 255, 255, 255);
+    ofSetColor(0, 255, 0, 255);
     
     if ( spectrum.playing ) {
         
@@ -224,17 +227,33 @@ void ofApp::drawVolumeLine(){
 
 
 //--------------------------------------------------------------
-void ofApp::imageCapture(){
+ofImage ofApp::imageCapture(){
     
     ofPixels _p;
     
     ofImage _buffImg;
     _buffImg.allocate(processScreenWidth, processScreenHeight, OF_IMAGE_COLOR);
-    
+
     shapesFbo.readToPixels(_p);
-    _buffImg.setFromPixels(_p.getData(), _p.getWidth(), _p.getHeight(), OF_IMAGE_COLOR);
+
+    ofPixels _nonAlpha;
+    _nonAlpha.allocate(512, 512, OF_PIXELS_RGB);
+
+    int _index = 0;
+    int _index4 = 0;
+    for (int i=0; i<512 * 512; i++) {
+        _nonAlpha[_index + 0] = _p[_index4 + 0];
+        _nonAlpha[_index + 1] = _p[_index4 + 1];
+        _nonAlpha[_index + 2] = _p[_index4 + 2];
+        _index+=3;
+        _index4+=4;
+    }
+
+    _buffImg.setFromPixels(_nonAlpha.getData(), 512, 512, OF_IMAGE_COLOR);
     spectrum.loadImageSpectrum(_buffImg);
+
     
+    return _nonAlpha;
 }
 
 
@@ -317,14 +336,14 @@ void ofApp::guiSetting(){
     gui.setPosition( ofGetWidth() - 230, 10 );
     gui.add(frameRate.setup("FrameRate", " "));
     //    gui.add(modelSelect.setup("Model Select"));
-    gui.add(speed.setup("speed", 0.45, 0.0, 3.0) );
+    gui.add(speed.setup("speed", 2.25, 0.0, 30.0) );
     //    gui.add(openf.setup( "Open Picture", false) );
-    gui.add(maxHz.setup( "Spectrum Max HZ", 1500, 300.0, 8000.0) );
-    gui.add(minHz.setup( "Spectrum Min HZ", 20, 1.0, 200.0) );
-    gui.add(lineSize.setup( "LINE", 1.8, 0.0, 20.0) );
+    gui.add(maxHz.setup( "Spectrum Max HZ", 3700, 300.0, 8000.0) );
+    gui.add(minHz.setup( "Spectrum Min HZ", 53, 1.0, 200.0) );
+    gui.add(lineSize.setup( "LINE", 8, 0.0, 20.0) );
     //    gui.add(reset.setup("Reset!", ""));
     //    gui.add(imageFormat.setup("Image Format Quad/Land", true) );
-    gui.add(returnZero.setup("Return Zero"));
+//    gui.add(returnZero.setup("Return Zero"));
     //    gui.add(pointView.setup("Point Cloud", true));
     //    gui.add(maxZDepth.setup( "Max zDepth", 1.0, 0.0, 10.0) );
     //    gui.add(minZDepth.setup( "Min zDepth", 0.0, -10.0, 10.0) );
@@ -334,7 +353,7 @@ void ofApp::guiSetting(){
     //    gui.add(errorMath.setup("error", true));
     //    gui.add(errorLength.setup("ErrorLength", 20, 2, 50));
     //    gui.add(fadeLength.setup("FadeLength", 0, 0, 0.1));
-    gui.add(volume.setup("Volume", 2, 0, 5));
+    gui.add(volume.setup("Volume", 2, 0, 2));
     
     
     imageProcessView.addListener(this, &ofApp::guiButton);
@@ -452,6 +471,8 @@ void ofApp::windowResized(int w, int h){
     
 }
 
+
+
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo info) {
     
@@ -465,7 +486,7 @@ void ofApp::generateShapeFbo(){
     
     shapesFbo.begin();
     
-    ofClear(0, 255);
+    ofClear(0, 0);
     
     //    for (int i=0; i<150; i++) {
     //        for (int j=0; j<2; j++) {
@@ -478,83 +499,135 @@ void ofApp::generateShapeFbo(){
     //        }
     //    }
     
-    
     //    for (int i=0; i<3; i++) {
     //        ofSetColor(30);
     //        ofDrawLine( 0, ofRandom(processScreenHeight), processScreenWidth, ofRandom(processScreenHeight) );
     //    }
-    
     
     //    for (int i=0; i<80; i++) {
     //        ofSetColor(ofRandom(0, 120), 60);
     //        ofDrawLine( 0, ofRandom(processScreenHeight), processScreenWidth, ofRandom(processScreenHeight) );
     //    }
     
-    
-    for (int i=0; i<900; i++) {
-        ofPushMatrix();
-        ofTranslate(i * 3, ofRandom(10, 20) );
-        ofSetColor(ofRandom(120, 200) * 0.2);
-        ofDrawRectangle( 0, 0, ofRandom(1, 1), ofRandom(1, 2) );
-        ofPopMatrix();
-    }
-    
-    for (int i=0; i<900; i++) {
-        ofPushMatrix();
-        ofTranslate(i * 3 + 1.5, ofRandom(30, 40) );
-        ofSetColor(ofRandom(120, 200) * 0.2);
-        ofDrawRectangle( 0, 0, ofRandom(1, 1), ofRandom(1, 2) );
-        ofPopMatrix();
-    }
-    
-    
-    for (int i=0; i<300; i++) {
-        
-        ofPushStyle();
-        ofNoFill();
-        
-        ofPushMatrix();
-        ofTranslate(i * 10, processScreenHeight - 120 );
-        ofSetColor(ofRandom(0, 255));
-        ofDrawRectangle( 0, 0, ofRandom(30, 50), ofRandom(10, 40) );
-        ofPopMatrix();
-        
-        ofPushMatrix();
-        ofTranslate(i * 15, processScreenHeight - 80 );
-        ofSetColor(ofRandom(0, 255));
-        ofDrawRectangle( 0, 0, ofRandom(30, 50), ofRandom(10, 40) );
-        ofPopMatrix();
-        
-        ofPushMatrix();
-        ofTranslate(i * 20, processScreenHeight - 60 );
-        ofSetColor(ofRandom(120, 255));
-        ofDrawRectangle( 0, 0, ofRandom(10, 10), ofRandom(10, 60) );
-        ofPopMatrix();
-        
-        ofPopStyle();
-    }
-    
-    
-    float _num = 10;
-    for (int j=0; j<10; j++) {
-        float _ratio = ofRandom(0.08, 0.3);
-        float _startY = ofRandom(processScreenHeight);
-        int _startNoise = ofRandom(10000);
-        ofPushStyle();
-        ofSetColor( ofRandom(10, 60) );
-        for (int i=0; i<_num; i+=1) {
-            float _x1 = i * processScreenWidth / _num;
-            float _x2 = (i + 1) * processScreenWidth / _num;
-            float _y1 = ofNoise((i + _startNoise) * _ratio) * 100 + _startY;
-            float _y2 = ofNoise((i + _startNoise + 1) * _ratio) * 100 + _startY;
-            ofDrawLine( _x1, _y1, _x2, _y2 );
-        }
-        ofPopStyle();
-    }
-    
-    
+//    dotDraw();
+
+    shapeDraw(3, 200);
+    shapeDraw(4, 250);
+    shapeDraw(5, 100);
+
+
+//    for (int i=0; i<300; i++) {
+//
+//        ofPushStyle();
+//        ofNoFill();
+//
+//        ofPushMatrix();
+//        ofTranslate(i * 10, processScreenHeight - 420 );
+//        ofSetColor(ofRandom(0, 255));
+//        ofDrawRectangle( 0, 0, ofRandom(30, 50), ofRandom(10, 40) );
+//        ofPopMatrix();
+//
+//        ofPushMatrix();
+//        ofTranslate(i * 15, processScreenHeight - 280 );
+//        ofSetColor(ofRandom(0, 255));
+//        ofDrawRectangle( 0, 0, ofRandom(30, 50), ofRandom(10, 40) );
+//        ofPopMatrix();
+//
+//        ofPushMatrix();
+//        ofTranslate(i * 20, processScreenHeight - 160 );
+//        ofSetColor(ofRandom(120, 255));
+//        ofDrawRectangle( 0, 0, ofRandom(10, 10), ofRandom(10, 60) );
+//        ofPopMatrix();
+//
+//        ofPopStyle();
+//    }
+
+//    float _num = 10;
+//    for (int j=0; j<10; j++) {
+//        float _ratio = ofRandom(0.08, 0.3);
+//        float _startY = ofRandom(processScreenHeight);
+//        int _startNoise = ofRandom(10000);
+//        ofPushStyle();
+//        ofSetColor( ofRandom(10, 60) );
+//        for (int i=0; i<_num; i+=1) {
+//            float _x1 = i * processScreenWidth / _num;
+//            float _x2 = (i + 1) * processScreenWidth / _num;
+//            float _y1 = ofNoise((i + _startNoise) * _ratio) * 100 + _startY;
+//            float _y2 = ofNoise((i + _startNoise + 1) * _ratio) * 100 + _startY;
+//            ofDrawLine( _x1, _y1, _x2, _y2 );
+//        }
+//        ofPopStyle();
+//    }
+
     shapesFbo.end();
     
-    
 }
+
+
+//--------------------------------------------------------------
+void ofApp::dotDraw(){
+
+    ofPushStyle();
+
+    ofSetColor(255, 220);
+
+    for (int i=0; i<512; i+=7) {
+        ofPushMatrix();
+        ofTranslate(i, ofRandom(10, 20) );
+//        ofSetColor(ofRandom(120, 200) * 0.2);
+        ofDrawRectangle( 0, 0, 2, 2 );
+        ofPopMatrix();
+
+        ofPushMatrix();
+        ofTranslate(i + 1.5, ofRandom(30, 40) );
+//        ofSetColor(ofRandom(120, 200) * 0.2);
+        ofDrawRectangle( 0, 0, 2, 2 );
+        ofPopMatrix();
+    }
+
+    ofPopStyle();
+}
+
+
+//--------------------------------------------------------------
+void ofApp::shapeDraw(int numShape, int size){
+
+    if(triggerEnd) {
+        triRotaion += 45;
+        triggerEnd = false;
+    }
+
+    ofPushMatrix();
+
+    ofPushStyle();
+    ofNoFill();
+    ofSetColor(255);
+    ofSetLineWidth(2);
+
+    ofTranslate(ofGetWidth() * 0.5, ofGetHeight() * 0.5);
+    ofRotateZDeg(triRotaion);
+
+    ofBeginShape();
+
+    int _numShape = numShape;
+    for (int i=0; i<_numShape; i++) {
+        int _size = size;
+        float _x = sin( ofDegToRad(i * 360 / _numShape) ) * _size;
+        float _y = cos( ofDegToRad(i * 360 / _numShape) ) * _size;
+        ofVertex(_x, _y);
+    }
+
+    ofEndShape(true);
+
+
+    ofPopStyle();
+    ofPopMatrix();
+
+}
+
+
+
+
+
+
 
