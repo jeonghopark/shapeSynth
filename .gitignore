@@ -7,3 +7,5 @@ build/
 xcuserdata/
 DerivedData/
 project.xcworkspace
+
+*.ttf
