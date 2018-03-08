@@ -109,6 +109,8 @@ public:
     //
     bool triggerEnd;
     void dotDraw();
+    void lineDraw();
+    void boxDraw();
 
     int triRotaion;
     void shapeDraw(int numShape, int size);
