@@ -219,7 +219,7 @@ void SpectrumDrawer::loadImageSpectrum(string target){
 }
 
 
-void SpectrumDrawer::loadImageSpectrum(ofImage _img){
+void SpectrumDrawer::loadImageSpectrum(ofImage & _img){
     spectrumCaptureLoader.clear();
     clear();
     //imageLoaded=false;

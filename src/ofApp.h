@@ -34,6 +34,7 @@ public:
     void audioReceived (float * input, int bufferSize, int nChannels);
     void audioOut(ofSoundBuffer & buffer);
     
+    vector<ofSoundDevice> audioInputDeviceList;
     ofSoundStream soundStream;
     
     float line;
@@ -44,15 +45,39 @@ public:
     float remainder;
     float wave;
     
+    float waveShapes;
+    float wavePoints;
+    float waveLines;
+    float waveBoxes;
+    
     double sineBuffer[514];
     float outp[INITIAL_BUFFER_SIZE];
     float amp[BIT];
     int hertzScale[BIT];
     float phases[BIT];
-    
-    
+
+    float ampPoints[BIT];
+    int hertzScalePoints[BIT];
+    float phasesPoints[BIT];
+
+    float ampLines[BIT];
+    int hertzScaleLines[BIT];
+    float phasesLines[BIT];
+
+    float ampBoxes[BIT];
+    int hertzScaleBoxes[BIT];
+    float phasesBoxes[BIT];
+
+
     SpectrumDrawer spectrum;
+    SpectrumDrawer spectrumPoints;
+    SpectrumDrawer spectrumLines;
+    SpectrumDrawer spectrumBoxes;
     PlayerHead playerHead;
+    PlayerHead playerHeadPoints;
+    PlayerHead playerHeadLines;
+    PlayerHead playerHeadBoxes;
+
     
     void guiSetting();
     ofxPanel gui;
@@ -90,6 +115,10 @@ public:
     void loadCapture(ofImage _img);
     ofImage imageCapture();
     
+    ofImage pixelsShapesCapture();
+    ofImage linesShapesCapture();
+    ofImage boxesShapesCapture();
+
 
     void errorLengthChanged(int & _m);
     void guiButton(bool & _b);
@@ -105,6 +134,15 @@ public:
     ofFbo shapesFbo;
     void generateShapeFbo();
 
+    ofFbo pointsFbo;
+    void generatePointsFbo();
+
+    ofFbo linesFbo;
+    void generateLinesFbo();
+
+    ofFbo boxesFbo;
+    void generateBoxesFbo();
+
 
     //
     bool triggerEnd;
@@ -117,7 +155,11 @@ public:
     void shapeDraw(int numShape, int size, int rotation);
 
 
+    ofSoundStreamSettings settings;
+    
     int rotateDeg;
+    
+    int audioDeviceNum;
 
 //    RotaryEncoder rotaryEncoder;
 };

@@ -17,7 +17,7 @@ public:
 	
 	void reloadTexture(int mode);
 	void loadImageSpectrum(string target);
-    void loadImageSpectrum(ofImage _img);
+    void loadImageSpectrum(ofImage & _img);
 	void loadMusic(string target);
 	void addSpectrum(float* buffer);
 	

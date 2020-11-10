@@ -20,7 +20,7 @@ void PlayerHead::drawPlayHead(){
 	ofSetColor(255, 255, 255, 180);
 //	ofCircle(x1, y1, 3);
 //	ofCircle(x2, y2, 3);
-	ofDrawLine(x1, y1, x2, y2);
+//	ofDrawLine(x1, y1, x2, y2);
     ofPopStyle();
 
 }
