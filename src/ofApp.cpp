@@ -112,7 +112,7 @@ void ofApp::update(){
         playerHead.x2 += speed;
 
         generateShapeFbo();
-        imageCapture();
+//        imageCapture();
 
         if (playerHead.x1 > processScreenWidth){
             triggerEnd = true;
@@ -129,10 +129,7 @@ void ofApp::update(){
     
     
     frameRate = ofToString(ofGetFrameRate(), 1);
-    
-    
     //    shapesFbo.draw(0, 0);
-
     
 }
 
@@ -191,10 +188,10 @@ void ofApp::drawVolumeLine(){
     ofPushStyle();
     ofSetColor(0, 255, 0, 255);
     
-    if ( spectrum.playing ) {
+    if (spectrum.playing) {
         
         vector< pair <float, float> > points = playerHead.getPoints(BIT);
-        
+
         for(int n = 0; n<BIT; n++){
             amp[n] = (amp[n]*line + spectrum.getAmp(points[n].first, points[n].second))/(line+1);
             hertzScale[n] = int(spectrum.getFreq(points[n].second));
@@ -257,7 +254,6 @@ ofImage ofApp::imageCapture(){
     _buffImg.setFromPixels(_nonAlpha.getData(), 512, 512, OF_IMAGE_COLOR);
     spectrum.loadImageSpectrum(_buffImg);
 
-    
     return _nonAlpha;
 }
 
@@ -277,8 +273,6 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels){
 void ofApp::audioOut(ofSoundBuffer & buffer){
     
     if(spectrum.playing){
-        
-        //        float *ptr = output;
         
         for (int i = 0; i < buffer.getNumFrames(); i++){
             
@@ -308,7 +302,6 @@ void ofApp::audioOut(ofSoundBuffer & buffer){
             buffer[i * buffer.getNumChannels()    ] = wave * volume;
             buffer[i * buffer.getNumChannels() + 1] = wave * volume;
             //            outp[i] = wave;
-            //            *ptr++ = wave * volume;
             
         }
         
@@ -341,7 +334,7 @@ void ofApp::guiSetting(){
     gui.setPosition( ofGetWidth() - 230, 10 );
     gui.add(frameRate.setup("FrameRate", " "));
     //    gui.add(modelSelect.setup("Model Select"));
-    gui.add(speed.setup("speed", 2.25, 0.0, 30.0) );
+    gui.add(speed.setup("speed", 0.75, 0.0, 10.0) );
     //    gui.add(openf.setup( "Open Picture", false) );
     gui.add(maxHz.setup( "Spectrum Max HZ", 3700, 300.0, 8000.0) );
     gui.add(minHz.setup( "Spectrum Min HZ", 53, 1.0, 200.0) );
