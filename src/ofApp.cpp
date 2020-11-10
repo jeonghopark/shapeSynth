@@ -501,17 +501,15 @@ void ofApp::generateShapeFbo(){
     
     ofClear(0, 0);
     
-//        lineDarw();
+    lineDraw();
 
-//        dotDraw();
+    dotDraw();
 
     shapeDraw(3, 200, rotateDeg);
     shapeDraw(4, 250, rotateDeg);
     shapeDraw(5, 100, rotateDeg);
 
-
-//        boxDraw();
-
+    boxDraw();
 
     shapesFbo.end();
     
