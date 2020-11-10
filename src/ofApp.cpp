@@ -151,7 +151,7 @@ void ofApp::draw(){
 
     ofPushMatrix();
 
-    ofBackground(255, 0, 0);
+    ofBackground(0, 0, 0);
     
     spectrum.update();
     
@@ -578,7 +578,7 @@ void ofApp::lineDraw(){
     for (int i=0; i<150; i++) {
         for (int j=0; j<2; j++) {
             ofPushMatrix();
-            ofSetColor(ofRandom(0, 120));
+            ofSetColor(255, 120);
             ofTranslate(i * 12, ofRandom(processScreenHeight) );
             //            ofRotateZDeg( ofRandom(-15, 15) );
             ofDrawRectangle( 0, 0, ofRandom(0, 5), ofRandom(0, 10) );
@@ -587,12 +587,12 @@ void ofApp::lineDraw(){
     }
 
     for (int i=0; i<3; i++) {
-        ofSetColor(30);
+        ofSetColor(255, 120);
         ofDrawLine( 0, ofRandom(processScreenHeight), processScreenWidth, ofRandom(processScreenHeight) );
     }
 
     for (int i=0; i<80; i++) {
-        ofSetColor(ofRandom(0, 120), 60);
+        ofSetColor(255, 120);
         ofDrawLine( 0, ofRandom(processScreenHeight), processScreenWidth, ofRandom(processScreenHeight) );
     }
 
@@ -603,7 +603,7 @@ void ofApp::lineDraw(){
         float _startY = ofRandom(processScreenHeight);
         int _startNoise = ofRandom(10000);
         ofPushStyle();
-        ofSetColor( ofRandom(10, 60) );
+        ofSetColor(255, 120);
         for (int i=0; i<_num; i+=1) {
             float _x1 = i * processScreenWidth / _num;
             float _x2 = (i + 1) * processScreenWidth / _num;
