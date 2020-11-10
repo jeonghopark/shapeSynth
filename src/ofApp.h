@@ -4,7 +4,7 @@
 #include "SpectrumDrawer.h"
 #include "PlayerHead.h"
 #include "ofxGui.h"
-
+//#include "RotaryEncoder.hpp"
 
 #define BUFFER_SIZE 8192
 #define SAMPLE_RATE 44100
@@ -114,6 +114,10 @@ public:
 
     int triRotaion;
     void shapeDraw(int numShape, int size);
+    void shapeDraw(int numShape, int size, int rotation);
 
 
+    int rotateDeg;
+
+//    RotaryEncoder rotaryEncoder;
 };

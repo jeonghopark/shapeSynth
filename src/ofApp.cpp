@@ -79,6 +79,9 @@ void ofApp::setup(){
     
     triggerEnd = false;
     triRotaion = 0;
+
+
+//    rotaryEncoder.setup();
 }
 
 
@@ -95,7 +98,8 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
+
+//    rotaryEncoder.update();
 
     spectrum.speed = speed;
     spectrum.maxHz = maxHz;
@@ -106,10 +110,11 @@ void ofApp::update(){
     if (spectrum.playing) {
         playerHead.x1 += speed;
         playerHead.x2 += speed;
-        
+
+        generateShapeFbo();
+        imageCapture();
+
         if (playerHead.x1 > processScreenWidth){
-            generateShapeFbo();
-            imageCapture();
             triggerEnd = true;
             playerHead.x1 = 0;
             playerHead.x2 = 0;
@@ -430,6 +435,14 @@ void ofApp::keyReleased(int key){
             bGuiView = !bGuiView;
             break;
             
+        case '+':
+            rotateDeg += 15;
+            break;
+
+        case '-':
+            rotateDeg -= 15;
+            break;
+
         default:
             break;
             
@@ -488,16 +501,16 @@ void ofApp::generateShapeFbo(){
     
     ofClear(0, 0);
     
-    //    lineDarw();
+//        lineDarw();
 
-    //    dotDraw();
+//        dotDraw();
 
-    shapeDraw(3, 200);
-    shapeDraw(4, 250);
-    shapeDraw(5, 100);
+    shapeDraw(3, 200, rotateDeg);
+    shapeDraw(4, 250, rotateDeg);
+    shapeDraw(5, 100, rotateDeg);
 
 
-    //    boxDraw();
+//        boxDraw();
 
 
     shapesFbo.end();
@@ -547,6 +560,43 @@ void ofApp::shapeDraw(int numShape, int size){
 
     ofTranslate(ofGetWidth() * 0.5, ofGetHeight() * 0.5);
     ofRotateZDeg(triRotaion);
+
+    ofBeginShape();
+
+    int _numShape = numShape;
+    for (int i=0; i<_numShape; i++) {
+        int _size = size;
+        float _x = sin( ofDegToRad(i * 360 / _numShape) ) * _size;
+        float _y = cos( ofDegToRad(i * 360 / _numShape) ) * _size;
+        ofVertex(_x, _y);
+    }
+
+    ofEndShape(true);
+
+
+    ofPopStyle();
+    ofPopMatrix();
+
+}
+
+
+//--------------------------------------------------------------
+void ofApp::shapeDraw(int numShape, int size, int rotation){
+
+    if(triggerEnd) {
+        triRotaion += 45;
+        triggerEnd = false;
+    }
+
+    ofPushMatrix();
+
+    ofPushStyle();
+    ofNoFill();
+    ofSetColor(255);
+    ofSetLineWidth(2);
+
+    ofTranslate(ofGetWidth() * 0.5, ofGetHeight() * 0.5);
+    ofRotateZDeg(rotation);
 
     ofBeginShape();
 
