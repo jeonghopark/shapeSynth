@@ -541,42 +541,6 @@ void ofApp::dotDraw(){
 }
 
 
-//--------------------------------------------------------------
-void ofApp::shapeDraw(int numShape, int size){
-
-    if(triggerEnd) {
-        triRotaion += 45;
-        triggerEnd = false;
-    }
-
-    ofPushMatrix();
-
-    ofPushStyle();
-    ofNoFill();
-    ofSetColor(255);
-    ofSetLineWidth(2);
-
-    ofTranslate(ofGetWidth() * 0.5, ofGetHeight() * 0.5);
-    ofRotateZDeg(triRotaion);
-
-    ofBeginShape();
-
-    int _numShape = numShape;
-    for (int i=0; i<_numShape; i++) {
-        int _size = size;
-        float _x = sin( ofDegToRad(i * 360 / _numShape) ) * _size;
-        float _y = cos( ofDegToRad(i * 360 / _numShape) ) * _size;
-        ofVertex(_x, _y);
-    }
-
-    ofEndShape(true);
-
-
-    ofPopStyle();
-    ofPopMatrix();
-
-}
-
 
 //--------------------------------------------------------------
 void ofApp::shapeDraw(int numShape, int size, int rotation){
@@ -593,7 +557,7 @@ void ofApp::shapeDraw(int numShape, int size, int rotation){
     ofSetColor(255);
     ofSetLineWidth(2);
 
-    ofTranslate(ofGetWidth() * 0.5, ofGetHeight() * 0.5);
+    ofTranslate(ofGetWidth() * 0.25, ofGetHeight() * 0.25);
     ofRotateZDeg(rotation);
 
     ofBeginShape();
