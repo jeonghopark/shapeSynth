@@ -59,12 +59,13 @@ void ofApp::setup(){
     spectrum.setup( 1, maxHertz );
     
     auto devices = soundStream.getMatchingDevices("default");
+    cout << soundStream.getDeviceList() << endl;
     ofSoundStreamSettings settings;
     //    auto devices = soundStream.getDeviceList();
-    if (!devices.empty()) {
-        settings.setOutDevice(devices[1]);
-    }
     settings.setOutListener(this);
+    if (!devices.empty()) {
+        settings.setOutDevice(devices[2]);
+    }
     settings.bufferSize = INITIAL_BUFFER_SIZE;
     settings.sampleRate = SAMPLE_RATE;
     settings.numInputChannels = 0;
@@ -154,7 +155,7 @@ void ofApp::draw(){
 
     ofPushMatrix();
 
-    ofBackground(255, 0, 0);
+    ofBackground(70, 70, 200);
     
     spectrum.update();
     
@@ -189,7 +190,7 @@ void ofApp::drawVolumeLine(){
     ofTranslate(playerHead.x1, 0);
     
     ofPushStyle();
-    ofSetColor(0, 255, 0, 255);
+    ofSetColor(255, 255, 0, 255);
     
     if ( spectrum.playing ) {
         
@@ -505,9 +506,13 @@ void ofApp::generateShapeFbo(){
 
 //        dotDraw();
 
-    shapeDraw(3, 200, rotateDeg);
-    shapeDraw(4, 250, rotateDeg);
-    shapeDraw(5, 100, rotateDeg);
+    shapeDraw(4, 175, rotateDeg + 45);
+    shapeDraw(4, 250, rotateDeg + 30);
+    shapeDraw(4, 200, rotateDeg);
+    shapeDraw(4, 150, rotateDeg + 60);
+    shapeDraw(4, 100, rotateDeg + 45);
+    shapeDraw(4, 75, rotateDeg + 60);
+    shapeDraw(4, 150, rotateDeg + 30);
 
 
 //        boxDraw();
